@@ -1,24 +1,27 @@
 <template>
-  <div class="container">
-    <div class="form">
-      <div>
-        <h1>Welcome To A-maze-ing Game</h1>
-        <h3 style="text-align: center">Please enter your name to register</h3>
-      </div>
-      <div>
-        <input
-          v-model="name"
-          placeholder="Enter Your Name"
-          type="text"
-          class="input"
-          @keyup.enter="registerFunc(name)"
-        />
-      </div>
-      <div>
-        <button class="button" @click="registerFunc(name)">Register</button>
-      </div>
-    </div>
-  </div>
+  <v-card width="800" class="mx-auto" :border="false">
+    <v-card-title> Welcome To A-maze-ing Game </v-card-title>
+    <v-card-subtitle> Please enter your name to register </v-card-subtitle>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="name"
+            placeholder="Enter your name"
+            type="text"
+            @keyup.enter="registerFunc(name)"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-col align="center">
+        <v-btn color="success" variant="flat" @click="registerFunc(name)"
+          >Register</v-btn
+        >
+      </v-col>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -61,31 +64,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.input {
-  border: 1px solid #000;
-  padding: 10px 40px;
-  border-radius: 5px;
-}
-.button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #4bb543;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-</style>
+<style scoped></style>

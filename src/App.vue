@@ -1,5 +1,16 @@
 <template>
-  <RouterView />
+  <v-app>
+    <v-row
+      align="center"
+      justify="center"
+      class="fill-height bg-background"
+      style="width: 65vw"
+    >
+      <v-col>
+        <RouterView />
+      </v-col>
+    </v-row>
+  </v-app>
 </template>
 
 <script lang="ts">

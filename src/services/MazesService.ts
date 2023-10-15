@@ -9,12 +9,12 @@ export class MazesService extends BaseService {
     super("mazes");
   }
   getMazes(): Promise<AxiosResponse<Array<AllMazesDto>>> {
-    return this.client.Get<Array<AllMazesDto>>(`${this.baseUrl}/mazes`)
+    return this.client.Get<Array<AllMazesDto>>(`${this.baseUrl}/all`)
   }
   enterMaze(query: EnterMazeQuery): Promise<AxiosResponse<string>> {
     let queryString = "?";
     let prepend = "";
     if (query.mazeName) { queryString += `${prepend}mazeName=${query.mazeName}`; prepend = '&'; }
-    return this.client.Post<string>(`${this.baseUrl}/${queryString}`)
+    return this.client.Post<string>(`${this.baseUrl}/enter${queryString}`)
   }
 }
