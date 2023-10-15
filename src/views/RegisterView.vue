@@ -1,14 +1,16 @@
 <template>
   <div class="container">
-    <div>
-      <h1>Welcome To A-maze-ing Game</h1>
-      <h3 style="text-align: center">Please enter your name to register</h3>
-    </div>
-    <div>
-      <input v-model="name" type="text" class="input" />
-    </div>
-    <div>
-      <button class="button" @click="registerFunc(name)">Register</button>
+    <div class="form">
+      <div>
+        <h1>Welcome To A-maze-ing Game</h1>
+        <h3 style="text-align: center">Please enter your name to register</h3>
+      </div>
+      <div>
+        <input v-model="name" type="text" class="input" />
+      </div>
+      <div>
+        <button class="button" @click="registerFunc(name)">Register</button>
+      </div>
     </div>
   </div>
 </template>
@@ -33,11 +35,14 @@ export default defineComponent({
 <style scoped>
 .container {
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  width: 100vh;
 }
 
 .input {

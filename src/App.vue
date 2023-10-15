@@ -1,6 +1,7 @@
 <template>
-  <RegisterView />
-  <!-- <MazeView /> -->
+  <div class="container">
+    <RegisterView />
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,4 +24,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: auto;
+}
+</style>
