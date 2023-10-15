@@ -6,7 +6,13 @@
         <h3 style="text-align: center">Please enter your name to register</h3>
       </div>
       <div>
-        <input v-model="name" type="text" class="input" />
+        <input
+          v-model="name"
+          placeholder="Enter Your Name"
+          type="text"
+          class="input"
+          @keyup.enter="registerFunc(name)"
+        />
       </div>
       <div>
         <button class="button" @click="registerFunc(name)">Register</button>
@@ -17,16 +23,39 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useToast } from 'vue-toastification';
+import axios, { AxiosError } from 'axios';
+import { usePlayerStore } from '@/stores/playerStore';
+import { mapActions } from 'pinia';
+const toast = useToast();
+import { PlayerService } from '@/services/PlayerService';
+import { RegisterPlayerQuery } from '@/models/RegisterPlayerQuery';
 
 export default defineComponent({
+  name: 'RegisterView',
   data() {
     return {
       name: '',
+      playerService: new PlayerService(),
     };
   },
   methods: {
+    ...mapActions(usePlayerStore, ['setIsRegistered']),
     registerFunc(name: string) {
-      console.log('name', name);
+      let query = new RegisterPlayerQuery();
+      query.name = name;
+      this.playerService
+        .registerPlayer(query)
+        .then((res: unknown) => {
+          this.setIsRegistered(true);
+          this.$router.push({ name: 'maze' });
+          toast.success('Registration successfull');
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.error(err.response?.data);
+          }
+        });
     },
   },
 });
@@ -50,7 +79,6 @@ export default defineComponent({
   padding: 10px 40px;
   border-radius: 5px;
 }
-
 .button {
   margin-top: 10px;
   padding: 10px 20px;

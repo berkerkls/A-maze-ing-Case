@@ -11,7 +11,6 @@ export class MazesService extends BaseService {
   getMazes(): Promise<AxiosResponse<Array<AllMazesDto>>> {
     return this.client.Get<Array<AllMazesDto>>(`${this.baseUrl}/mazes`)
   }
-
   enterMaze(query: EnterMazeQuery): Promise<AxiosResponse<string>> {
     let queryString = "?";
     let prepend = "";
