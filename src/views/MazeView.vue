@@ -4,16 +4,21 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { MazeService } from '@/services/MazeService';
 
 export default defineComponent({
   data() {
     return {
       name: '',
+      mazeService: new MazeService(),
     };
   },
+  mounted() {
+    this.getPossibleActions();
+  },
   methods: {
-    registerFunc(name: string) {
-      console.log('name', name);
+    getPossibleActions() {
+      this.mazeService.getPossibleActions();
     },
   },
 });
