@@ -51,7 +51,7 @@ export default defineComponent({
         .registerPlayer(query)
         .then((res: unknown) => {
           this.setIsRegistered(true);
-          this.$router.push({ name: 'maze' });
+          this.$router.push({ name: 'mazelist' });
           toast.success('Registration successfull');
         })
         .catch((err: Error | AxiosError) => {

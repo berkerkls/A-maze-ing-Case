@@ -38,6 +38,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useMazeStore } from '@/stores/mazeStore';
+import { mapActions } from 'pinia';
+import { mapState } from 'pinia';
 
 const toast = useToast();
 
@@ -45,26 +48,50 @@ const toast = useToast();
 import { MazesService } from '@/services/MazesService';
 // query
 import { EnterMazeQuery } from '@/models/EnterMazeQuery';
+import { AllMazesDto } from '@/models/AllMazesDto';
 import axios, { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
 
 export default defineComponent({
   name: 'MazeList',
-  props: ['mazeList'],
   data() {
     return {
       selectedMazeName: '' as string,
       mazesService: new MazesService(),
       mazeInformation: {} as any,
+      mazeList: new Array<AllMazesDto>(),
     };
   },
+  computed: {
+    ...mapState(useMazeStore, ['enteredMazes']),
+  },
+  mounted() {
+    this.getMazeList();
+  },
   methods: {
+    getMazeList() {
+      this.mazesService
+        .getMazes()
+        .then((res: AxiosResponse<Array<AllMazesDto>>) => {
+          if (res.status == 200) {
+            console.log('maze list', res.data);
+            this.mazeList = res.data.filter(
+              (item: AllMazesDto) => !this.enteredMazes?.includes(item.name)
+            );
+          }
+        });
+    },
+    ...mapActions(useMazeStore, ['setCurrentMaze', 'setEnteredMazes']),
     enterMaze() {
       let query = new EnterMazeQuery();
       query.mazeName = this.selectedMazeName;
       this.mazesService.enterMaze(query).then((res: AxiosResponse<any>) => {
-        console.log('res', res);
-        this.mazeInformation = res;
+        console.log('entered maze res', res);
+        this.mazeInformation = res.data;
+        console.log('maze', this.mazeInformation);
+        this.setEnteredMazes(this.selectedMazeName);
+        this.setCurrentMaze(this.mazeInformation);
+        this.$router.push({ name: 'maze' });
       });
     },
   },

@@ -17,7 +17,7 @@ export class MazeService extends BaseService {
     let queryString = "?";
     let prepend = "";
     if (query.direction) { queryString += `${prepend}direction=${query.direction}`; prepend = '&'; }
-    return this.client.Post<string>(`${this.baseUrl}/${queryString}`)
+    return this.client.Post<string>(`${this.baseUrl}/move${queryString}`)
   }
 
   // todo : tag service

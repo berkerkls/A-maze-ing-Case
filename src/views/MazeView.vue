@@ -1,6 +1,12 @@
 <template>
-  <MazeList v-if="!playerInfo.isInMaze" :mazeList="mazeList" />
-  <MazeComponent v-else :playerInfo="playerInfo" />
+  <v-row>
+    <v-col align="center" cols="5">
+      <v-btn @click="forgetPlayer" color="error" variant="flat"
+        >Start Over</v-btn
+      >
+    </v-col>
+  </v-row>
+  <MazeList v-if="!playerInfo.isInMaze" />
 </template>
 
 <script lang="ts">
@@ -14,12 +20,11 @@ import { MazesService } from '@/services/MazesService';
 
 // store
 import { mapState } from 'pinia';
+import { mapActions } from 'pinia';
 import { usePlayerStore } from '@/stores/playerStore';
 
 // query dto types
-import { AllMazesDto } from '@/models/AllMazesDto';
 import { PlayerInfoDto } from '@/models/PlayerInfoDto';
-import axios, { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
 
 // components
@@ -39,7 +44,6 @@ export default defineComponent({
       playerService: new PlayerService(),
       mazesService: new MazesService(),
       playerInfo: new PlayerInfoDto(),
-      mazeList: new Array<AllMazesDto>(),
     };
   },
   mounted() {
@@ -53,6 +57,7 @@ export default defineComponent({
     ...mapState(usePlayerStore, ['isRegistered']),
   },
   methods: {
+    ...mapActions(usePlayerStore, ['setIsRegistered']),
     getPlayerDetail() {
       this.playerService
         .getPlayerInfo()
@@ -60,20 +65,21 @@ export default defineComponent({
           if (res.status == 200) {
             console.log('res', res.data);
             this.playerInfo = res.data;
-            if (!res.data.isInMaze) {
-              this.getMazeList();
+            if (res.data.isInMaze) {
+              this.$router.push({ name: 'maze' });
             }
           }
         });
     },
-    getMazeList() {
-      this.mazesService
-        .getMazes()
-        .then((res: AxiosResponse<Array<AllMazesDto>>) => {
-          if (res.status == 200) {
-            console.log('res', res.data);
-            this.mazeList = res.data;
-          }
+    forgetPlayer() {
+      this.playerService
+        .forgetCurrentProgress()
+        .then((res: AxiosResponse<string>) => {
+          this.$router.push({ name: 'register' });
+          this.setIsRegistered(false);
+          localStorage.removeItem('isRegistered');
+          localStorage.removeItem('currentMaze');
+          localStorage.removeItem('enteredMazes');
         });
     },
   },

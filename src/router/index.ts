@@ -2,17 +2,23 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import MazeView from "@/views/MazeView.vue"
 import RegisterView from "@/views/RegisterView.vue"
+import MazeComponent from "@/components/MazeComponent.vue"
 
 
 const routes = [
   {
     path: "/",
-    redirect: { name: 'maze' }
+    redirect: { name: 'mazelist' }
+  },
+  {
+    path: "/mazelist",
+    name: "mazelist",
+    component: MazeView,
   },
   {
     path: "/maze",
     name: "maze",
-    component: MazeView,
+    component: MazeComponent
   },
   {
     path: "/register",
