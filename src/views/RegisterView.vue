@@ -30,6 +30,7 @@ import { useToast } from 'vue-toastification';
 import axios, { AxiosError } from 'axios';
 import { usePlayerStore } from '@/stores/playerStore';
 import { mapActions } from 'pinia';
+import { mapState } from 'pinia';
 const toast = useToast();
 import { PlayerService } from '@/services/PlayerService';
 import { RegisterPlayerQuery } from '@/models/RegisterPlayerQuery';
@@ -41,6 +42,14 @@ export default defineComponent({
       name: '',
       playerService: new PlayerService(),
     };
+  },
+  mounted() {
+    if (this.isRegistered) {
+      this.$router.push({ name: 'mazelist' });
+    }
+  },
+  computed: {
+    ...mapState(usePlayerStore, ['isRegistered']),
   },
   methods: {
     ...mapActions(usePlayerStore, ['setIsRegistered']),
@@ -56,6 +65,7 @@ export default defineComponent({
         })
         .catch((err: Error | AxiosError) => {
           if (axios.isAxiosError(err)) {
+            this.setIsRegistered(true);
             toast.error(err.response?.data);
           }
         });

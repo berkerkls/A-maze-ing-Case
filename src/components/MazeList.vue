@@ -9,11 +9,12 @@
       <v-row>
         <v-col>
           <v-autocomplete
-            v-model="selectedMazeName"
+            v-model="selectedMaze"
             :items="mazeList"
             item-title="name"
             item-value="name"
             label="Select a maze"
+            return-object
           >
           </v-autocomplete>
         </v-col>
@@ -23,7 +24,7 @@
       <v-row>
         <v-col align="center">
           <v-btn
-            :disabled="!selectedMazeName"
+            :disabled="selectedMaze?.name.length == 0"
             @click="enterMaze()"
             color="success"
             variant="flat"
@@ -56,7 +57,7 @@ export default defineComponent({
   name: 'MazeList',
   data() {
     return {
-      selectedMazeName: '' as string,
+      selectedMaze: new AllMazesDto(),
       mazesService: new MazesService(),
       mazeInformation: {} as any,
       mazeList: new Array<AllMazesDto>(),
@@ -81,15 +82,20 @@ export default defineComponent({
           }
         });
     },
-    ...mapActions(useMazeStore, ['setCurrentMaze', 'setEnteredMazes']),
+    ...mapActions(useMazeStore, [
+      'setCurrentMaze',
+      'setEnteredMazes',
+      'setCurrentMazeName',
+    ]),
     enterMaze() {
       let query = new EnterMazeQuery();
-      query.mazeName = this.selectedMazeName;
+      query.mazeName = this.selectedMaze.name;
       this.mazesService.enterMaze(query).then((res: AxiosResponse<any>) => {
         console.log('entered maze res', res);
         this.mazeInformation = res.data;
         console.log('maze', this.mazeInformation);
-        this.setEnteredMazes(this.selectedMazeName);
+        this.setEnteredMazes(this.selectedMaze);
+        this.setCurrentMazeName(this.selectedMaze.name);
         this.setCurrentMaze(this.mazeInformation);
         this.$router.push({ name: 'maze' });
       });

@@ -31,14 +31,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  overflow: auto;
-}
-</style>
