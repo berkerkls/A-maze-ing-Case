@@ -1,36 +1,25 @@
 # A-maze-ing Case
 
-This template should help get you started developing with Vue 3 in Vite.
+A-maze-ing Case was quite fun and inspiring. When I solved each maze I got another idea and every idea showed me another way.
 
-## Recommended IDE Setup
+## Process
+- First of all I setup my services and store. I got two store player store and maze store. Inside of the playerStore, I got the information whether the user is registered or not if they registered I directly route them to the maze selection screen. In maze selection screen, I fetch player information and from response I check isInMaze key, if the client is in Maze I route to the maze component.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
+*In maze store, I save the information to local stroge to keep them in case of page refresh*;
+- I keep all entered mazes inside of array to filter out in the list as it says in rules.
+- I got currentMaze to see the client location and after client location I got every move of the client in opposite way in pathToStart. I do this because if I got stuck in maze, I will be able to go back where I came and see the other options and explore different ways.
+- I have path to exit when I found exit, I also keep the way from the moment when I found but if the totalScoreInBag is equal to potentialScoreInMaze I will stop saving and suggest to go exit with the path I saved.
+- I have the lastScoreCollectionPoint path, by keeping this path I suggest the client to collect the score if scores in bag and scores in hand are equal to potential scores together.
+- I only enabled the ways of the possible location present, I set the other ways disabled.
 ## Project Setup
-
 ```sh
-npm install
+yarn
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 ### Type-Check, Compile and Minify for Production
