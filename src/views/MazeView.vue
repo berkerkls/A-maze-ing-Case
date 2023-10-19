@@ -13,6 +13,8 @@
 import { useToast } from 'vue-toastification';
 const toast = useToast();
 import { defineComponent } from 'vue';
+import axios from 'axios';
+import type { AxiosError } from 'axios';
 // services
 import { MazeService } from '@/services/MazeService';
 import { PlayerService } from '@/services/PlayerService';
@@ -69,6 +71,11 @@ export default defineComponent({
               this.$router.push({ name: 'maze' });
             }
           }
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
         });
     },
     forgetPlayer() {
@@ -80,6 +87,11 @@ export default defineComponent({
           localStorage.removeItem('isRegistered');
           localStorage.removeItem('currentMaze');
           localStorage.removeItem('enteredMazes');
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
         });
     },
   },

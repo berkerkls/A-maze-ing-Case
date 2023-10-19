@@ -104,7 +104,6 @@ export default defineComponent({
       this.currentMazeInfo = this.currentMaze;
     }
   },
-  methods: {},
   watch: {
     collectedScores: {
       handler() {

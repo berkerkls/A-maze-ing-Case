@@ -290,7 +290,6 @@ export default defineComponent({
             localStorage.removeItem('isExitFound');
             localStorage.removeItem('lastScoreCollectionPoint');
             localStorage.removeItem('isScoreCollectionPointFound');
-
             this.$router.push({ name: 'mazelist' });
           }
         })
@@ -302,14 +301,10 @@ export default defineComponent({
     },
   },
   watch: {
-    isExitFound() {
-      console.log('exitfound', this.isExitFound);
-    },
     currentMaze: {
       handler() {
         if (this.enteredMaze) {
           this.potentialScoreInMaze = this.enteredMaze.potentialReward;
-          console.log('potential score in maze', this.enteredMaze);
         }
       },
       deep: true,

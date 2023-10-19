@@ -39,11 +39,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useToast } from 'vue-toastification';
+const toast = useToast();
 import { useMazeStore } from '@/stores/mazeStore';
 import { mapActions } from 'pinia';
 import { mapState } from 'pinia';
-
-const toast = useToast();
 
 // services
 import { MazesService } from '@/services/MazesService';
@@ -82,6 +81,11 @@ export default defineComponent({
                 !this.enteredMazes.some((el: any) => el.name === item.name)
             );
           }
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
         });
     },
     ...mapActions(useMazeStore, [
@@ -92,15 +96,22 @@ export default defineComponent({
     enterMaze() {
       let query = new EnterMazeQuery();
       query.mazeName = this.selectedMaze.name;
-      this.mazesService.enterMaze(query).then((res: AxiosResponse<any>) => {
-        this.mazeInformation = res.data;
-        this.setEnteredMazes(this.selectedMaze);
-        this.setCurrentMazeName(this.selectedMaze.name);
-        this.setCurrentMaze(this.mazeInformation);
-        setTimeout(() => {
-          this.$router.push({ name: 'maze' });
-        }, 2000);
-      });
+      this.mazesService
+        .enterMaze(query)
+        .then((res: AxiosResponse<any>) => {
+          this.mazeInformation = res.data;
+          this.setEnteredMazes(this.selectedMaze);
+          this.setCurrentMazeName(this.selectedMaze.name);
+          this.setCurrentMaze(this.mazeInformation);
+          setTimeout(() => {
+            this.$router.push({ name: 'maze' });
+          }, 2000);
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
+        });
     },
   },
 });
