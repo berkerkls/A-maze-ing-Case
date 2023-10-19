@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-20" rounded="true" width="500" max-height="50%">
+  <v-card rounded="true" width="500" max-height="50%">
     <v-card-actions>
       <v-row>
         <v-col
@@ -98,6 +98,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 
 import { useMazeStore } from '@/stores/mazeStore';
 import { mapState } from 'pinia';
@@ -108,7 +110,8 @@ import { MazeService } from '@/services/MazeService';
 
 // query
 import { MoveSuppliedDirectionQuery } from '@/models/moveSuppliedDirectionQuery';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import type { AxiosResponse, AxiosError } from 'axios';
 import { MazeInformationDto } from '@/models/MazeInformationDto';
 
 export default defineComponent({
@@ -128,7 +131,13 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState(useMazeStore, ['currentMaze', 'currentMazeName']),
+    ...mapState(useMazeStore, [
+      'currentMaze',
+      'currentMazeName',
+      'getIsExitFound',
+      'lastScoreCollectionPoint',
+      'isScoreCollectionPointFound',
+    ]),
   },
   mounted() {
     if (this.currentMaze[0]) {
@@ -137,8 +146,23 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(useMazeStore, ['setCurrentMaze', 'setCollectedScores']),
+    ...mapActions(useMazeStore, [
+      'setCurrentMaze',
+      'setCollectedScores',
+      'setIsExitFound',
+      'setExitPath',
+      'setIsScoreCollectionPointFound',
+      'setPathToStart',
+      'setLastScoreCollectionPoint',
+    ]),
     toggleMoveButton(direction: string) {
+      if (this.getIsExitFound) {
+        this.setExitPath(direction);
+      }
+      if (this.isScoreCollectionPointFound) {
+        this.setLastScoreCollectionPoint(direction);
+      }
+      this.setPathToStart(direction);
       let query = new MoveSuppliedDirectionQuery();
       query.direction = direction;
       this.mazeService
@@ -147,12 +171,30 @@ export default defineComponent({
           console.log('res', res);
           if (res.status == 200) {
             this.currentMazeInfo = res.data;
+            if (res.data.canExitMazeHere) {
+              this.setIsExitFound(true);
+            }
+            if (res.data.canCollectScoreHere) {
+              this.setIsScoreCollectionPointFound(true);
+            }
+            // if nearer score collection point found I reset and set the new path
+            if (
+              res.data.canCollectScoreHere &&
+              this.lastScoreCollectionPoint.length > 0
+            ) {
+              this.setLastScoreCollectionPoint('', true);
+            }
             this.setCurrentMaze(res.data);
             this.setActions(res.data);
           }
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
         });
     },
-    setActions(currentMaze: object) {
+    setActions(currentMaze: MazeInformationDto) {
       this.canMoveUp = false;
       this.canMoveDown = false;
       this.canMoveLeft = false;
@@ -177,27 +219,41 @@ export default defineComponent({
       });
     },
     collectScore() {
-      this.mazeService.collectScore().then((res: AxiosResponse<any>) => {
-        if (res.status == 200) {
-          let collectedScore = {
-            mazeName: this.currentMazeName[0],
-            collectedScore: +this.currentMazeInfo.currentScoreInHand,
-          };
-          this.setCollectedScores(collectedScore);
-          this.setCurrentMaze(res.data);
-          this.setActions(res.data);
-        }
-      });
+      this.mazeService
+        .collectScore()
+        .then((res: AxiosResponse<any>) => {
+          if (res.status == 200) {
+            let collectedScore = {
+              mazeName: this.currentMazeName[0],
+              collectedScore: +this.currentMazeInfo.currentScoreInHand,
+            };
+            this.setCollectedScores(collectedScore);
+            this.setCurrentMaze(res.data);
+            this.setActions(res.data);
+          }
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
+        });
     },
     exitMaze() {
-      this.mazeService.exitMaze().then((res: any) => {
-        if (res.status == 200) {
-          localStorage.removeItem('currentMaze');
-          localStorage.removeItem('currentMazeName');
-          localStorage.removeItem('collectedScores');
-          this.$router.push({ name: 'mazelist' });
-        }
-      });
+      this.mazeService
+        .exitMaze()
+        .then((res: any) => {
+          if (res.status == 200) {
+            localStorage.removeItem('currentMaze');
+            localStorage.removeItem('currentMazeName');
+            localStorage.removeItem('collectedScores');
+            this.$router.push({ name: 'mazelist' });
+          }
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
+        });
     },
   },
 });

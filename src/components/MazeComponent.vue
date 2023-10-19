@@ -1,17 +1,21 @@
 <template>
-  <v-row>
-    <v-col align="center" cols="5">
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    "
+  >
+    <v-col align="center">
       <v-btn @click="forgetPlayer" color="error" variant="flat"
         >Start Over</v-btn
       >
     </v-col>
-  </v-row>
-  <v-row>
     <MazeScreen />
-  </v-row>
-  <v-row class="mt-10">
     <MazeControls />
-  </v-row>
+  </div>
 </template>
 
 <script lang="ts">

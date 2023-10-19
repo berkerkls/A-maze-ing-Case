@@ -52,6 +52,7 @@ import { EnterMazeQuery } from '@/models/EnterMazeQuery';
 import { AllMazesDto } from '@/models/AllMazesDto';
 import axios, { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
+import { log } from 'console';
 
 export default defineComponent({
   name: 'MazeList',
@@ -75,9 +76,11 @@ export default defineComponent({
         .getMazes()
         .then((res: AxiosResponse<Array<AllMazesDto>>) => {
           if (res.status == 200) {
-            console.log('maze list', res.data);
-            this.mazeList = res.data.filter(
-              (item: AllMazesDto) => !this.enteredMazes?.includes(item.name)
+            this.mazeList = res.data;
+            // filtering out entered mazes in maze list as it says in rules
+            this.mazeList = this.mazeList.filter(
+              (item: AllMazesDto) =>
+                !this.enteredMazes.some((el: any) => el.name === item.name)
             );
           }
         });

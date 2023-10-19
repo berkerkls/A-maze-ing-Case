@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col align="center" cols="5">
+    <v-col align="center">
       <v-btn @click="forgetPlayer" color="error" variant="flat"
         >Start Over</v-btn
       >
@@ -50,7 +50,7 @@ export default defineComponent({
     if (!this.isRegistered) {
       this.$router.push({ name: 'register' });
     } else {
-      this.getPlayerDetail();
+      // this.getPlayerDetail();
     }
   },
   computed: {

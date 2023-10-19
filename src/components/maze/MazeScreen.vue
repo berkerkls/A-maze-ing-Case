@@ -43,7 +43,7 @@ export default defineComponent({
       (item: AllMazesDto) => item.name === this.currentMazeName[0]
     );
     if (this.collectedScores) {
-      this.collectedScores[0].map((item: any) => {
+      this.collectedScores.map((item: any) => {
         if (item.mazeName == this.currentMazeName) {
           this.collectedScoreInMaze = item.collectedScore;
         }
@@ -61,11 +61,13 @@ export default defineComponent({
   watch: {
     collectedScores: {
       handler() {
-        this.collectedScores[0].map((item: any) => {
-          if (item.mazeName === this.currentMazeName) {
-            this.collectedScoreInMaze = item.collectedScore;
-          }
-        });
+        if (this.collectedScores) {
+          this.collectedScores.map((item: any) => {
+            if (item.mazeName === this.currentMazeName) {
+              this.collectedScoreInMaze = item.collectedScore;
+            }
+          });
+        }
       },
       deep: true,
     },

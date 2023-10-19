@@ -1,7 +1,7 @@
 export class MoveActionsDto {
   constructor() {
     this.allowsExit = false;
-    this.allowScoreCollection = false
+    this.allowsScoreCollection = false
     this.direction = "";
     this.hasBeenVisited = false;
     this.isStart = false;
@@ -11,7 +11,7 @@ export class MoveActionsDto {
   }
 
   allowsExit: boolean;
-  allowScoreCollection: boolean;
+  allowsScoreCollection: boolean;
   direction: string;
   hasBeenVisited: boolean;
   isStart: boolean;
