@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
+import { token } from '@/config/settings';
 
 export const usePlayerStore = defineStore('player', {
   state: () => {
     return {
-      userToken: "HTI Thanks You [j3x]",
+      userToken: token,
       isRegistered: localStorage.getItem('isRegistered') as boolean | string
     }
   },

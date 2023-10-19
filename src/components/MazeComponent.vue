@@ -39,6 +39,9 @@ export default defineComponent({
       playerService: new PlayerService(),
     };
   },
+  mounted() {
+    window.location.reload();
+  },
   methods: {
     ...mapActions(usePlayerStore, ['setIsRegistered']),
     getPossibleActions() {
