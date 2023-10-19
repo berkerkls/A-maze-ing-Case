@@ -6,7 +6,7 @@
     <v-card-subtitle>{{
       `Potential Score in Maze: ${potentialScoreInMaze} // Current Maze Score in Bag: ${collectedScoreInMaze}`
     }}</v-card-subtitle>
-    <v-card-text>
+    <v-card-text style="max-height: 40vh">
       <v-row
         v-if="isExitFound && +collectedScoreInMaze === +potentialScoreInMaze"
       >

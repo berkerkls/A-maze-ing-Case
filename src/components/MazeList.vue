@@ -93,15 +93,13 @@ export default defineComponent({
       let query = new EnterMazeQuery();
       query.mazeName = this.selectedMaze.name;
       this.mazesService.enterMaze(query).then((res: AxiosResponse<any>) => {
-        console.log('entered maze res', res);
         this.mazeInformation = res.data;
-        console.log('maze', this.mazeInformation);
         this.setEnteredMazes(this.selectedMaze);
         this.setCurrentMazeName(this.selectedMaze.name);
         this.setCurrentMaze(this.mazeInformation);
         setTimeout(() => {
           this.$router.push({ name: 'maze' });
-        }, 1500);
+        }, 2000);
       });
     },
   },
