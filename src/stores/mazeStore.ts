@@ -10,7 +10,7 @@ export const useMazeStore = defineStore('maze', {
       collectedScores: localStorage.getItem('collectedScores') ? JSON.parse(localStorage.getItem('collectedScores') as string) : [],
       exitPath: localStorage.getItem('exitPath') ? JSON.parse(localStorage.getItem('exitPath') as string) : [],
       pathToStart: localStorage.getItem('pathToStart') ? JSON.parse(localStorage.getItem('pathToStart') as string) : [],
-      isExitFound: localStorage.getItem('isExitFound') as boolean | string,
+      isExitFound: localStorage.getItem('isExitFound') ?? false as boolean | string,
       isScoreCollectionPointFound: localStorage.getItem('isScoreCollectionPointFound') as boolean | string,
       lastScoreCollectionPoint: localStorage.getItem('lastScoreCollectionPoint') ? JSON.parse(localStorage.getItem('lastScoreCollectionPoint') as string) : [],
     }
@@ -66,7 +66,7 @@ export const useMazeStore = defineStore('maze', {
       }
       localStorage.setItem('collectedScores', JSON.stringify(this.collectedScores))
     },
-    setExitPath(direction: string) {
+    setExitPath(direction: string, reset?: boolean, deleteFirstPath?: boolean) {
       let oppositeDirection = ''
       if (direction === 'Up') {
         oppositeDirection = 'Down'
@@ -80,7 +80,16 @@ export const useMazeStore = defineStore('maze', {
       if (direction === 'Right') {
         oppositeDirection = 'Left'
       }
-      this.exitPath.unshift(oppositeDirection)
+
+      if (reset) {
+        this.exitPath = []
+      }
+      if (oppositeDirection.length > 0) {
+        this.exitPath.unshift(oppositeDirection)
+      }
+      if (deleteFirstPath) {
+        this.exitPath.splice(0, 1)
+      }
       localStorage.setItem('exitPath', JSON.stringify(this.exitPath))
     },
     setIsExitFound(exitFound: boolean) {
@@ -91,7 +100,7 @@ export const useMazeStore = defineStore('maze', {
       this.isScoreCollectionPointFound = scoreCollectionPointFound
       localStorage.setItem('isScoreCollectionPointFound', this.isScoreCollectionPointFound.toString())
     },
-    setPathToStart(direction: string) {
+    setPathToStart(direction: string, deleteFirstPath?: boolean) {
       let oppositeDirection = ''
       if (direction === 'Up') {
         oppositeDirection = 'Down'
@@ -105,13 +114,15 @@ export const useMazeStore = defineStore('maze', {
       if (direction === 'Right') {
         oppositeDirection = 'Left'
       }
-      let isAllVisited = this.currentMaze.possibleMoveActions.every((el: MoveActionsDto) => el.hasBeenVisited === true)
-      if (!isAllVisited) {
+      if (oppositeDirection.length > 0) {
         this.pathToStart.unshift(oppositeDirection)
-        localStorage.setItem('pathToStart', JSON.stringify(this.pathToStart))
       }
+      if (deleteFirstPath) {
+        this.pathToStart.splice(0, 1)
+      }
+      localStorage.setItem('pathToStart', JSON.stringify(this.pathToStart))
     },
-    setLastScoreCollectionPoint(direction: string, reset?: boolean) {
+    setLastScoreCollectionPoint(direction: string, reset?: boolean, deleteFirstPath?: boolean) {
       let oppositeDirection = ''
       if (direction === 'Up') {
         oppositeDirection = 'Down'
@@ -125,9 +136,14 @@ export const useMazeStore = defineStore('maze', {
       if (direction === 'Right') {
         oppositeDirection = 'Left'
       }
-      this.lastScoreCollectionPoint.unshift(oppositeDirection)
       if (reset) {
         this.lastScoreCollectionPoint = []
+      }
+      if (oppositeDirection.length > 0) {
+        this.lastScoreCollectionPoint.unshift(oppositeDirection)
+      }
+      if (deleteFirstPath) {
+        this.lastScoreCollectionPoint.splice(0, 1)
       }
       localStorage.setItem('lastScoreCollectionPoint', JSON.stringify(this.lastScoreCollectionPoint))
     }

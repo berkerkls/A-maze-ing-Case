@@ -50,7 +50,7 @@ export default defineComponent({
     if (!this.isRegistered) {
       this.$router.push({ name: 'register' });
     } else {
-      // this.getPlayerDetail();
+      this.getPlayerDetail();
     }
   },
   computed: {

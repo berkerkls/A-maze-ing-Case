@@ -1,13 +1,5 @@
 <template>
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    "
-  >
+  <div class="container">
     <v-col align="center">
       <v-btn @click="forgetPlayer" color="error" variant="flat"
         >Start Over</v-btn
@@ -81,5 +73,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  gap: 15px;
 }
 </style>

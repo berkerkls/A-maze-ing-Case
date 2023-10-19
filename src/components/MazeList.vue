@@ -52,7 +52,6 @@ import { EnterMazeQuery } from '@/models/EnterMazeQuery';
 import { AllMazesDto } from '@/models/AllMazesDto';
 import axios, { AxiosError } from 'axios';
 import type { AxiosResponse } from 'axios';
-import { log } from 'console';
 
 export default defineComponent({
   name: 'MazeList',
@@ -100,7 +99,9 @@ export default defineComponent({
         this.setEnteredMazes(this.selectedMaze);
         this.setCurrentMazeName(this.selectedMaze.name);
         this.setCurrentMaze(this.mazeInformation);
-        this.$router.push({ name: 'maze' });
+        setTimeout(() => {
+          this.$router.push({ name: 'maze' });
+        }, 1500);
       });
     },
   },

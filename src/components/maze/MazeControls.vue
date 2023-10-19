@@ -113,7 +113,8 @@ import { MoveSuppliedDirectionQuery } from '@/models/moveSuppliedDirectionQuery'
 import axios from 'axios';
 import type { AxiosResponse, AxiosError } from 'axios';
 import { MazeInformationDto } from '@/models/MazeInformationDto';
-
+import { MoveActionsDto } from '@/models/MoveActionsDto';
+import { AllMazesDto } from '@/models/AllMazesDto';
 export default defineComponent({
   name: 'MazeControls',
   data() {
@@ -128,21 +129,31 @@ export default defineComponent({
       rightReward: 0,
       upReward: 0,
       downReward: 0,
+      potentialScoreInMaze: 0,
+      enteredMaze: new AllMazesDto(),
     };
   },
   computed: {
     ...mapState(useMazeStore, [
       'currentMaze',
       'currentMazeName',
-      'getIsExitFound',
+      'isExitFound',
       'lastScoreCollectionPoint',
       'isScoreCollectionPointFound',
+      'exitPath',
+      'pathToStart',
+      'enteredMazes',
     ]),
   },
   mounted() {
     if (this.currentMaze[0]) {
       this.setActions(this.currentMaze[0]);
       this.currentMazeInfo = this.currentMaze[0];
+    }
+    if (this.enteredMazes) {
+      this.enteredMaze = this.enteredMazes.find(
+        (item: AllMazesDto) => item.name === this.currentMazeName[0]
+      );
     }
   },
   methods: {
@@ -156,13 +167,34 @@ export default defineComponent({
       'setLastScoreCollectionPoint',
     ]),
     toggleMoveButton(direction: string) {
-      if (this.getIsExitFound) {
+      let isAllVisited = this.currentMazeInfo.possibleMoveActions.every(
+        (el: MoveActionsDto) => el.hasBeenVisited === true
+      );
+      if (this.isExitFound && isAllVisited === false) {
         this.setExitPath(direction);
+        this.exitPath[0] == direction
+          ? this.setExitPath('', false, true)
+          : null;
       }
-      if (this.isScoreCollectionPointFound) {
+      // if client collect the all scores I route the client to collection point if
+      if (
+        this.isScoreCollectionPointFound &&
+        this.currentMaze.currentScoreInBag +
+          this.currentMaze.currentScoreInHand ==
+          this.potentialScoreInMaze
+      ) {
+        this.lastScoreCollectionPoint[0] == direction
+          ? this.setLastScoreCollectionPoint('', false, true)
+          : null;
+      } else {
         this.setLastScoreCollectionPoint(direction);
       }
-      this.setPathToStart(direction);
+      // if all the possible destinations visited we no more update the start path because client may want to go back to start and explore
+      if (isAllVisited === false) {
+        this.setPathToStart(direction);
+      } else {
+        this.pathToStart[0] == direction ? this.setPathToStart('', true) : null;
+      }
       let query = new MoveSuppliedDirectionQuery();
       query.direction = direction;
       this.mazeService
@@ -183,6 +215,9 @@ export default defineComponent({
               this.lastScoreCollectionPoint.length > 0
             ) {
               this.setLastScoreCollectionPoint('', true);
+            }
+            if (res.data.canExitMazeHere && this.exitPath) {
+              this.setExitPath('', true);
             }
             this.setCurrentMaze(res.data);
             this.setActions(res.data);
@@ -246,6 +281,12 @@ export default defineComponent({
             localStorage.removeItem('currentMaze');
             localStorage.removeItem('currentMazeName');
             localStorage.removeItem('collectedScores');
+            localStorage.removeItem('pathToStart');
+            localStorage.removeItem('exitPath');
+            localStorage.removeItem('isExitFound');
+            localStorage.removeItem('lastScoreCollectionPoint');
+            localStorage.removeItem('isScoreCollectionPointFound');
+
             this.$router.push({ name: 'mazelist' });
           }
         })
@@ -254,6 +295,20 @@ export default defineComponent({
             toast.info(err.response?.data);
           }
         });
+    },
+  },
+  watch: {
+    isExitFound() {
+      console.log('exitfound', this.isExitFound);
+    },
+    currentMaze: {
+      handler() {
+        if (this.enteredMaze) {
+          this.potentialScoreInMaze = this.enteredMaze.potentialReward;
+          console.log('potential score in maze', this.enteredMaze);
+        }
+      },
+      deep: true,
     },
   },
 });
