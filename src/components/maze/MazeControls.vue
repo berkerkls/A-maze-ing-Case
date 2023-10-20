@@ -172,13 +172,17 @@ export default defineComponent({
       );
       if (
         this.isExitFound &&
+        this.currentMaze.currentScoreInBag !== this.potentialScoreInMaze
+      ) {
+        this.setExitPath(direction);
+      }
+      if (
+        this.isExitFound &&
         this.currentMaze.currentScoreInBag === this.potentialScoreInMaze
       ) {
         this.exitPath[0] == direction
           ? this.setExitPath('', false, true)
           : null;
-      } else {
-        this.setExitPath(direction);
       }
       // if client collect the all scores I route the client to collection point if
       if (

@@ -1,7 +1,7 @@
 <template>
   <v-card width="500">
     <v-card-title>
-      {{ currentMazeName[0] }}
+      {{ currentMazeName[0] ? currentMazeName[0] : '' }}
     </v-card-title>
     <v-card-subtitle>{{
       `Potential Score in Maze: ${potentialScoreInMaze} // Current Maze Score in Bag: ${collectedScoreInMaze}`
@@ -82,7 +82,7 @@ export default defineComponent({
       'lastScoreCollectionPoint',
     ]),
   },
-  mounted() {
+  created() {
     let enteredMaze;
     if (this.enteredMazes) {
       enteredMaze = this.enteredMazes.find(
