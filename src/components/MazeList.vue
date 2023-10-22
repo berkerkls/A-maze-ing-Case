@@ -105,7 +105,7 @@ export default defineComponent({
           this.setCurrentMaze(this.mazeInformation);
           setTimeout(() => {
             this.$router.push({ name: 'maze' });
-          }, 2000);
+          }, 1000);
         })
         .catch((err: Error | AxiosError) => {
           if (axios.isAxiosError(err)) {

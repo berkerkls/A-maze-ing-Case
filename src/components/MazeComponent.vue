@@ -39,32 +39,19 @@ export default defineComponent({
       playerService: new PlayerService(),
     };
   },
-  mounted() {
-    window.location.reload();
-  },
   methods: {
     ...mapActions(usePlayerStore, ['setIsRegistered']),
-    getPossibleActions() {
-      this.mazeService
-        .getPossibleActions()
-        .then((res: unknown) => {
-          console.log(res, 'res');
-          if (res) {
-            toast.info(res);
-          }
-        })
-        .catch((err: Error | AxiosError) => {
-          if (axios.isAxiosError(err)) {
-            toast.info(err.response?.data);
-          }
-        });
-    },
     forgetPlayer() {
       this.playerService
         .forgetCurrentProgress()
         .then((res: AxiosResponse<string>) => {
           this.$router.push({ name: 'register' });
           this.setIsRegistered(false);
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            toast.info(err.response?.data);
+          }
         });
     },
   },
