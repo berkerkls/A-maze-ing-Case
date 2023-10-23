@@ -150,11 +150,14 @@ export default defineComponent({
       this.setActions(this.currentMaze[0]);
       this.currentMazeInfo = this.currentMaze[0];
     }
-    if (this.enteredMazes) {
-      this.enteredMaze = this.enteredMazes.find(
-        (item: AllMazesDto) => item.name === this.currentMazeName[0]
-      );
+    if (!this.currentMaze.possibleMoveActions) {
+      this.getPossibleMoveActions();
     }
+    // if (this.enteredMazes) {
+    //   this.enteredMaze = this.enteredMazes.find(
+    //     (item: AllMazesDto) => item.name === this.currentMazeName[0]
+    //   );
+    // }
   },
   methods: {
     ...mapActions(useMazeStore, [
@@ -302,6 +305,15 @@ export default defineComponent({
             toast.info(err.response?.data);
           }
         });
+    },
+    getPossibleMoveActions() {
+      this.mazeService.getPossibleActions().then((res: any) => {
+        if (res.status === 200) {
+          this.currentMazeInfo = res.data;
+          this.setCurrentMaze(this.currentMazeInfo);
+          this.setActions(this.currentMazeInfo);
+        }
+      });
     },
   },
   watch: {

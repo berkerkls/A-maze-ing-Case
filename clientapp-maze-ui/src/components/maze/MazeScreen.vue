@@ -1,8 +1,8 @@
 <template>
   <v-card width="500">
-    <v-card-title>
+    <!-- <v-card-title>
       {{ currentMazeName[0] ? currentMazeName[0] : '' }}
-    </v-card-title>
+    </v-card-title> -->
     <v-card-subtitle>{{
       `Potential Score in Maze: ${potentialScoreInMaze} // Current Maze Score in Bag: ${collectedScoreInMaze}`
     }}</v-card-subtitle>
@@ -84,22 +84,22 @@ export default defineComponent({
   },
   created() {
     let enteredMaze;
-    if (this.enteredMazes) {
-      enteredMaze = this.enteredMazes.find(
-        (item: AllMazesDto) => item.name === this.currentMazeName[0]
-      );
-    }
-    if (this.collectedScores) {
+    // if (this.enteredMazes.length > 0) {
+    //   enteredMaze = this.enteredMazes.find(
+    //     (item: AllMazesDto) => item.name === this.currentMazeName[0]
+    //   );
+    // }
+    if (this.collectedScores.length > 0) {
       this.collectedScores.map((item: any) => {
         if (item.mazeName == this.currentMazeName) {
           this.collectedScoreInMaze = item.collectedScore;
         }
       });
     }
-    if (enteredMaze) {
-      this.potentialScoreInMaze = enteredMaze.potentialReward;
-      console.log('potential score in maze', enteredMaze);
-    }
+    // if (enteredMaze) {
+    //   this.potentialScoreInMaze = enteredMaze.potentialReward;
+    //   console.log('potential score in maze', enteredMaze);
+    // }
     if (this.currentMaze) {
       this.currentMazeInfo = this.currentMaze;
     }
