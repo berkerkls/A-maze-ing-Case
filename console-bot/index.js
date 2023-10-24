@@ -1,3 +1,5 @@
+// run with npm run start inside console-bot file and for .env file API_BASE and TOKEN must be added
+
 require('dotenv').config();
 require('colors');
 const forgetPlayer = require('./services/ForgetPlayer');
@@ -348,7 +350,29 @@ const mazeLoop = async () => {
     console.log('here is your location', location);
     let turn = 0;
     // when exit the maze in do while loop it can throw error so we can check if we have location and then run do while loop
-    do {
+    // do {
+    //   if (location.canExitMazeHere && timeToExit) {
+    //     await exitMaze();
+    //   } else if (location.canCollectScoreHere && scoreInHand > 0) {
+    //     await collectScore();
+    //     console.log('Scores were collected'.green);
+    //   }
+    //   await giveDelay();
+    //   console.log('possible directions:', location.possibleMoveActions);
+    //   console.log(
+    //     `You have ${location.currentScoreInHand} score in your hand and ${
+    //       location.currentScoreInBag
+    //     } in bag. Still ${
+    //       potentialScoreInMaze - location.currentScoreInBag
+    //     } to put your bag.`
+    //   );
+    //   await toggleMovement();
+    //   console.log(`It's the ${turn} direction you went`);
+    //   turn++;
+    // } while (isInMaze);
+
+    // probably do while loop not gonna work in here and even if isInMaze is false it will do and throw error so we can try this.
+    if (isInMaze) {
       if (location.canExitMazeHere && timeToExit) {
         await exitMaze();
       } else if (location.canCollectScoreHere && scoreInHand > 0) {
@@ -367,7 +391,9 @@ const mazeLoop = async () => {
       await toggleMovement();
       console.log(`It's the ${turn} direction you went`);
       turn++;
-    } while (isInMaze);
+    }
+
+    // We are already inside of a loop so we don't need to do while loop I was giving the name manually inside enterTheMaze func like enterTheMaze('Easy deal') but in loop we can try this one.
   }
 };
 
