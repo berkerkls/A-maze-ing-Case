@@ -340,13 +340,14 @@ const mazeLoop = async () => {
   console.log('start');
   await getMazeList();
   for (let i = 0; i < mazeList.length; i++) {
+    // I was giving the maze name manually in here when I test this time we loop the list and give the each name
     await enterTheMaze(mazeList[i].name);
-    // we wil loop over the mazes todos:
     if (!location.possibleMoveActions) {
       await getPossinleMoveActions();
     }
     console.log('here is your location', location);
     let turn = 0;
+    // when exit the maze in do while loop it can throw error so we can check if we have location and then run do while loop
     do {
       if (location.canExitMazeHere && timeToExit) {
         await exitMaze();
