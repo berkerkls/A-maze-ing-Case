@@ -45,7 +45,6 @@ const getPlayerInfo = async () => {
       console.log(data);
       playerInfo = data;
       isInMaze = playerInfo.isInMaze;
-      console.log(playerInfo, 'deneme');
     })
     .catch((error) => {
       console.log(error);
@@ -65,8 +64,14 @@ const getMazeList = async () => {
       }
     })
     .then((data) => {
-      console.log('We are done, here is the maze list');
+      console.log(
+        'Maze list ready and we are entering the first available maze...'
+      );
+      // we are filtering all the mazes we have enterd so far(haven't tried it since I run the bot one by one but it must work)
       mazeList = data;
+      mazeList = mazeList.filter((item) =>
+        enteredMazes.some((el) => el.name === item.name)
+      );
       console.log(mazeList);
     })
     .catch((error) => console.error(error));
@@ -75,7 +80,6 @@ const getMazeList = async () => {
 const enterTheMaze = async (mazeName) => {
   console.log(`Entering the maze.. ${mazeName}`.cyan);
   let currentMaze = mazeList.find((el) => el.name === mazeName);
-  console.log('The current maze is', currentMaze, currentMaze.potentialReward);
   potentialScoreInMaze += currentMaze.potentialReward;
   currentMazeName = mazeName;
   enteredMazes = [...enteredMazes, currentMaze];
@@ -117,7 +121,10 @@ const getPossinleMoveActions = async () => {
     })
     .then((data) => {
       location = data;
-      console.log('We got possible actions in here:', location);
+      console.log(
+        'We got your location and possible actions, some earnings in here:',
+        location
+      );
     })
     .catch((error) => console.error(error));
 };
@@ -151,7 +158,7 @@ const exitMaze = async () => {
 };
 
 const collectScore = async () => {
-  console.log('Collecting score');
+  console.log('Collecting scores..'.green);
   await fetch(`${process.env.API_BASE}/maze/collectScore`, {
     method: 'POST',
     headers: {
@@ -190,7 +197,6 @@ const setMove = async () => {
   );
   let chooseBestOption = () => {
     console.log('trying to find the best option'.yellow);
-    console.log('in all options', allDirections);
     // filtered the last direction now we need to go to best direction
     allDirections.forEach((el) => {});
     for (let i = 0; i < allDirections.length; i++) {
@@ -274,10 +280,13 @@ const setMove = async () => {
 
   // if we couldn't find any directions in our loop and in conditions we will go random direction
   if (!foundDirectionInLoop && !foundDirectionInCondition) {
-    console.log("couldn't find the best match going with random direction".red);
+    console.log(
+      'There is no result depends on our conditions so we are going random option until we find a match'
+        .red
+    );
     let randomDirection = Math.floor(Math.random() * allDirections.length);
     direction = allDirections[randomDirection].direction;
-    console.log(`Random option selected: ${randomDirection}`);
+    console.log(`Random option selected: ${direction}`);
   }
 };
 
@@ -380,7 +389,6 @@ const mazeLoop = async () => {
         console.log('Scores were collected'.green);
       }
       await giveDelay();
-      console.log('possible directions:', location.possibleMoveActions);
       console.log(
         `You have ${location.currentScoreInHand} score in your hand and ${
           location.currentScoreInBag
